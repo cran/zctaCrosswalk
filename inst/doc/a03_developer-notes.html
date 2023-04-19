@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Developer Notes</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Developer Notes</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zctaCrosswalk)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<p>While creating this package I was acutely aware that ZCTAs change
+frequently. For example, back in 2016 I created a similar package called
+<a href="https://github.com/arilamstein/choroplethrZip">choroplethrZip</a>.
+That package is now out of date, because the underlying data it stores
+became out of date. I expect that something similar will eventually
+happen with this package.</p>
+<p>This vignette is written as a “note to my future self” in case I wind
+up needing to write a similar package again in the future. It is also
+intended to increase the number of people who understand how to create
+packages like this.</p>
+<div id="zcta_crosswalk" class="section level2">
+<h2>?zcta_crosswalk</h2>
+<p>The core data structure in this package is
+<code>?zcta_crosswalk</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(zcta_crosswalk)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(zcta_crosswalk, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 46,960 × 9</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   zcta  zcta_numeric state_name  state_usps state_fips state_fips_numeric</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;                   &lt;int&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 00601          601 puerto rico PR         72                         72</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 00601          601 puerto rico PR         72                         72</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 00602          602 puerto rico PR         72                         72</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 00602          602 puerto rico PR         72                         72</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 00603          603 puerto rico PR         72                         72</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 46,955 more rows</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: county_name &lt;chr&gt;, county_fips &lt;chr&gt;,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; #   county_fips_numeric &lt;int&gt;</span></span></code></pre></div>
+<p>Most of the effort in creating this package was spent creating this
+data structure. Let’s see how it was created.</p>
+<div id="get_zcta_crosswalk" class="section level3">
+<h3>?get_zcta_crosswalk</h3>
+<p>Start by looking at the contents of the function
+<code>?get_zcta_crosswalk</code>:</p>
+<pre><code>get_zcta_crosswalk = function() {
+
+  url = &quot;https://www2.census.gov/geo/docs/maps-data/data/rel2020/zcta520/tab20_zcta520_county20_natl.txt&quot;
+  zcta_crosswalk = read_delim(file = url, delim = &quot;|&quot;)
+
+  # Select and rename columns
+  zcta_crosswalk = zcta_crosswalk |&gt;
+    rename(zcta        = .data$GEOID_ZCTA5_20,
+           county_fips = .data$GEOID_COUNTY_20,
+           county_name = .data$NAMELSAD_COUNTY_20) |&gt;
+    select(.data$zcta, .data$county_fips, .data$county_name)
+
+  # 1. The county FIPS is always 5 characters. And the first 2 characters always
+  # indicate the state. See https://en.wikipedia.org/wiki/FIPS_county_code.
+  # Breaking out the state allows for easier state selection later.
+  # 2. This file has all counties, some of which do not have a ZCTA. Remove
+  # those counties.
+  zcta_crosswalk |&gt;
+    mutate(state_fips = str_sub(.data$county_fips, 1, 2)) |&gt;
+    filter(!is.na(.data$zcta))
+}</code></pre>
+<p>The function reads and transforms the contents of a URL. At the time
+of this writing that is the URL for the Census Bureau’s “2010 ZCTA to
+County Relationship File”, a file which I mentioned earlier.</p>
+<p>This means that if Census publishes an updated dataset in the same
+format tomorrow you could just change the URL, rerun the code and get
+the updated data in R. (Note that I do not know when Census plans to
+update this dataset or whether they plan to publish it in the same
+format.)</p>
+<p>If you open the URL referenced in <code>?get_zcta_crosswalk</code> in
+a browser you will see rows like this:</p>
+<pre><code>221704258470394|90210|ZCTA5 90210|27823432|153478|G6350|B5|S|275901063468976|06037|Los Angeles County|10513491099|1787501506|G4020|H1|A|27823432|153478</code></pre>
+<p>This tells us that ZCTA 90210 is in Los Angeles County. It also tells
+us that Los Angles County has FIPS Code 06037.</p>
+</div>
+<div id="adding-in-state-information" class="section level3">
+<h3>Adding in State Information</h3>
+<p>Unfortunately, the file does not directly contain any state
+information. And since I wanted to run queries like “Get all ZCTAs in a
+given state”, I needed to add that in.</p>
+<p>I started by splitting out the first two characters of each County
+FIPS Code into a new column called <code>state_fips</code>. This allows
+a user to search for ZCTAs in a state if they know the state’s FIPS
+code.</p>
+<p>However, this does not help us if users want to select a state by
+it’s name or Postal Code Abbreviation. To address this limitation I
+created a new dataframe called <code>state_names</code>, and used it to
+join against the results of <code>?get_zcta_crosswalk</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(state_names)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(state_names, <span class="at">n =</span> <span class="dv">5</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 56 × 4</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   full       usps  fips_numeric fips_character</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;         </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 alaska     AK               2 02            </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 alabama    AL               1 01            </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 arkansas   AR               5 05            </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 arizona    AZ               4 04            </span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 california CA               6 06            </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 51 more rows</span></span></code></pre></div>
+<p>One thing to keep in mind is that while there are technically only 50
+states, “state” in this dataset really means “any top level
+administrative region”. This dataset contains 56 states (the extra ones
+are: the District of Columbia, Puerto Rico, US Virigin Islands, American
+Samoa, Guam and the Northern Mariana Islands).</p>
+<p>I believe that it would be useful for R to have a standalone package
+that contains a data frame like this for all FIPS codes. I did not break
+<code>state_names</code> out into a separate package because even though
+it has 56 state-level entities, the full list is much <a href="https://www.census.gov/library/reference/code-lists/ansi.html">larger</a>.</p>
+<p>The code I used to generate <code>state_names</code> is in
+<code>inst/gen_state_states.R</code>.</p>
+<p>Note that while R has two built-in vectors that deal with state names
+(<code>state.abb</code> and <code>state.name</code>), they cannot help
+us here because: (1) they do not contain FIPS codes and (2) they only
+contain 50 states.</p>
+</div>
+</div>
+<div id="learning-about-zctas" class="section level2">
+<h2>Learning About ZCTAs</h2>
+<p>If you would like to learn more about ZCTAs (including how they
+differ from ZIP Codes), I recommend two references:</p>
+<ol style="list-style-type: decimal">
+<li>My free course <a href="https://ari-lamsteins-courses.thinkific.com/courses/mapmaking-in-r-with-choroplethr">Mapmaking
+in R with Choroplethr</a> has three sections dedicated to “ZIP Code
+Choropleths”.</li>
+<li>In 2017 I had the pleasure of meeting Jon Sperling, who is one of
+the creators of the ZCTA, at the Association of Public Data Users (APDU)
+conference. You can learn about that meeting, including a reference to
+one of his papers on the topic, <a href="https://arilamstein.com/blog/2017/10/24/meeting-titans-open-data/">here</a>.</li>
+</ol>
+<p>One of my recollections from that meeting is Jon explaining that ZIP
+Codes are designed to follow roads. This means that different sides of a
+single block can have different ZIP codes. Census geography, however,
+treats blocks as atomic. This means that all homes on a single block
+must have the same ZCTA. This difference in construction means that ZIPs
+and ZCTAs are unlikely to ever truly be identical.</p>
+</div>
+<div id="closing-thoughts" class="section level2">
+<h2>Closing Thoughts</h2>
+<p>My primary concern with this dataset is that people will assume that
+it is a crosswalk for present-day ZIP Codes. As stated above, ZCTAs
+rarely (if ever) line up perfectly with ZIP Codes. Additionally, this
+dataset was published in 2020, and it is not clear how many changes have
+occurred to ZIP Codes in the interim.</p>
+</div>
+<div id="funding" class="section level2">
+<h2>Funding</h2>
+<p>I would like to thank my employer, <a href="https://market-bridge.com/">MarketBridge</a>, for supporting the
+development of this package. This package would not have been developed
+without their support.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
